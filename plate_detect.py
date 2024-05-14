@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 MIN_MATCH_COUNT = 4
 
 img1 = cv.imread('photos_to_detect/img_1.png', cv.IMREAD_GRAYSCALE)
-img2 = cv.imread('photos_to_detect/subaru_front.jpeg', cv.IMREAD_GRAYSCALE)
+img2 = cv.imread('photos_to_detect/huyndai.jpeg', cv.IMREAD_GRAYSCALE)
 
 sift = cv.SIFT_create()
 

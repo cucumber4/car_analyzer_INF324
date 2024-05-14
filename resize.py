@@ -2,13 +2,11 @@ import os
 import cv2
 
 # Папка с исходными изображениями
-source_folder = 'photos_to_detect'
-
-# Папка для сохранения измененных изображений
-target_folder = 'photos_to_detect'
+source_folder = 'logos/Car_Brand_Logos/Train/7'
+target_folder = 'logos/Car_Brand_Logos/Train/7'# Папка для сохранения измененных изображений
 
 # Размер, к которому вы хотите изменить изображения
-target_size = (960, 1280)
+target_size = (50, 50)
 
 # Создаем целевую папку, если она не существует
 if not os.path.exists(target_folder):
