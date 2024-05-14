@@ -14,7 +14,7 @@ from keras.preprocessing.image import ImageDataGenerator
 
 # Parameters
 
-path = "logos/Car_Brand_Logos/Train"  # folder with all the class folders
+path = "../logos/Car_Brand_Logos/Train"  # folder with all the class folders
 labelFile = 'labels.csv'  # file with all names of classes
 batch_size_val = 16
 steps_per_epoch_val = 80
