@@ -43,25 +43,25 @@ def preprocessing(img):
 
 def getClassName(classNo):
     if classNo == 0:
-        return 'hyundai'
+        return 'Hyundai'
     elif classNo == 1:
-        return 'lexus'
+        return 'Lexus'
     elif classNo == 2:
-        return 'mazda'
+        return 'Mazda'
     elif classNo == 3:
-        return 'mercedes'
+        return 'Mercedes'
     elif classNo == 4:
-        return 'opel'
+        return 'Opel'
     elif classNo == 5:
-        return 'skoda'
+        return 'Skoda'
     elif classNo == 6:
-        return 'toyota'
+        return 'Voyota'
     elif classNo == 7:
-        return 'volkswagen'
+        return 'Volkswagen'
 
 while True:
 
-    imgOriginal = cv2.imread("../logos/img_2.png")
+    imgOriginal = cv2.imread("../crop.jpg")
 
 
     img = np.asarray(imgOriginal)

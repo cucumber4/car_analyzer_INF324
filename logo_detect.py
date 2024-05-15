@@ -1,102 +1,36 @@
+import cv2
 import numpy as np
-import cv2 as cv
-import easyocr
-from statistics import mode
-from matplotlib import pyplot as plt
+import torch
 
-MIN_MATCH_COUNT = 4
+def crop_logo(img):
+    logo_detection = torch.hub.load('ultralytics/yolov5', 'custom', path='models/logo_detection.pt')
 
-img1 = cv.imread('logos/img_1.png', cv.IMREAD_GRAYSCALE)
-img2 = cv.imread('photos_to_detect/huyndai.jpeg', cv.IMREAD_GRAYSCALE)
+    detection_result = logo_detection(img)
+    image = cv2.imread(img_path)
+    croped_image = None
 
-sift = cv.SIFT_create()
+    car_logo = detection_result.xywh[0]
+    print(car_logo)
 
-kp1, des1 = sift.detectAndCompute(img1, None)
-kp2, des2 = sift.detectAndCompute(img2, None)
-
-FLANN_INDEX_KDTREE = 1
-index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
-search_params = dict(checks=50)
-
-flann = cv.FlannBasedMatcher(index_params, search_params)
-
-matches = flann.knnMatch(des1, des2, k=2)
-
-good = []
-for m, n in matches:
-    if m.distance < 0.7 * n.distance:
-        good.append(m)
-
-if len(good) > MIN_MATCH_COUNT:
-    src_pts = np.float32([kp1[m.queryIdx].pt for m in good]).reshape(-1, 1, 2)
-    dst_pts = np.float32([kp2[m.trainIdx].pt for m in good]).reshape(-1, 1, 2)
-
-    M, mask = cv.findHomography(src_pts, dst_pts, cv.RANSAC, 5.0)
-    matchesMask = mask.ravel().tolist()
-
-    h, w = img1.shape
-    pts = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(-1, 1, 2)
-    dst = cv.perspectiveTransform(pts, M)
-
-
-else:
-    print("Not enough matches are found - {}/{}".format(len(good), MIN_MATCH_COUNT))
-    matchesMask = None
-
-draw_params = dict(matchColor=(0, 255, 255),
-                   singlePointColor=None,
-                   matchesMask=matchesMask,
-                   flags=2)
-
-img3 = cv.drawMatches(img1, kp1, img2, kp2, good, None, **draw_params)
-
-dst_pts = np.float32([kp2[m.trainIdx].pt for m in good]).reshape(-1, 1, 2)
-texts = []
-
-
-for point in range(len(good)):
     try:
-        print(dst_pts[point])
+        x = car_logo[0][0].item()
+        y = car_logo[0][1].item()
+        w = car_logo[0][2].item()
+        h = car_logo[0][3].item()
+        prediction = car_logo[0][4].item()
 
-        center_point = dst_pts[point]
-        top_left_point = center_point - np.array([-20, 80])
-        bottom_right_point = center_point + np.array([250, 100])
+    except:
+        print("can't detect logo")
+        exit()
 
-        print(top_left_point, '\n', bottom_right_point)
+    croped_image = image[int(y - h / 2):int(y + h / 2), int(x - w / 2):int(x + w / 2)]
+    return croped_image
 
-        # Предположим, что вырезаемый прямоугольник обозначен переменными top_left_point и bottom_right_point
+img_path = "photos_to_detect/huyndai.jpeg"
+croped_image = crop_logo(img_path)
 
-        # Округляем координаты, чтобы они были целыми числами
-        top_left_point = np.round(top_left_point).astype(int)
-        bottom_right_point = np.round(bottom_right_point).astype(int)
-
-        # Преобразуем координаты в корректный формат
-        top_left_point = tuple(top_left_point[0])
-        bottom_right_point = tuple(bottom_right_point[0])
-
-        # Вырезаем прямоугольник изображения
-        cropped_img = img2[top_left_point[1]:bottom_right_point[1], top_left_point[0]:bottom_right_point[0]]
-
-
-        _, gray = cv.threshold(cropped_img, 120, 255, cv.THRESH_BINARY)
-
-        reader = easyocr.Reader(['en'])
-        result = reader.readtext(gray)
-        text = str(result[0][1]).upper()
-
-        print(text)
-        texts.append(text)
-
-        plt.imshow(cropped_img, 'gray'), plt.show()
-
-        print(len(text))
-
-    except Exception as e:
-        print("Error:", e)
-
-plt.imshow(img3, 'gray'), plt.show()
-
-print(texts)
-print(mode(texts))
-
-
+if croped_image is not None:
+    cv2.imshow("logo", croped_image)
+    cv2.waitKey(0)  # Добавление этой строки позволит окну оставаться открытым
+else:
+    print("Failed to crop logo")

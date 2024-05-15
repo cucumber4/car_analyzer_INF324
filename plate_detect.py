@@ -3,11 +3,13 @@ import cv2 as cv
 import easyocr
 from statistics import mode
 from matplotlib import pyplot as plt
+from logo_detect import crop_logo
 
 MIN_MATCH_COUNT = 4
 
 img1 = cv.imread('photos_to_detect/img_1.png', cv.IMREAD_GRAYSCALE)
 img2 = cv.imread('photos_to_detect/huyndai.jpeg', cv.IMREAD_GRAYSCALE)
+
 
 sift = cv.SIFT_create()
 
@@ -95,7 +97,6 @@ for point in range(len(good)):
         print("Error:", e)
 
 plt.imshow(img3, 'gray'), plt.show()
-
 print(texts)
 print(mode(texts))
 
