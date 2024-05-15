@@ -10,7 +10,7 @@ def crop_logo(img):
     croped_image = None
 
     car_logo = detection_result.xywh[0]
-    print(car_logo)
+    # print(car_logo)
 
     try:
         x = car_logo[0][0].item()
@@ -24,13 +24,14 @@ def crop_logo(img):
         exit()
 
     croped_image = image[int(y - h / 2):int(y + h / 2), int(x - w / 2):int(x + w / 2)]
+    resized_image = cv2.resize(image, (50,50), interpolation=cv2.INTER_AREA)
     return croped_image
 
 img_path = "photos_to_detect/huyndai.jpeg"
 croped_image = crop_logo(img_path)
 
-if croped_image is not None:
-    cv2.imshow("logo", croped_image)
-    cv2.waitKey(0)  # Добавление этой строки позволит окну оставаться открытым
-else:
-    print("Failed to crop logo")
+# if croped_image is not None:
+#     cv2.imshow("logo", croped_image)
+#     cv2.waitKey(0)
+# else:
+#     print("Failed to crop logo")
