@@ -3,12 +3,11 @@ import cv2 as cv
 import easyocr
 from statistics import mode
 from matplotlib import pyplot as plt
-from logo_detect import crop_logo
 
 MIN_MATCH_COUNT = 4
 
 img1 = cv.imread('photos_to_detect/img_1.png', cv.IMREAD_GRAYSCALE)
-img2 = cv.imread('photos_to_detect/huyndai.jpeg', cv.IMREAD_GRAYSCALE)
+img2 = cv.imread('photos_to_detect/subaru_front.jpeg', cv.IMREAD_GRAYSCALE)
 
 
 sift = cv.SIFT_create()
@@ -62,7 +61,7 @@ for point in range(len(good)):
 
         center_point = dst_pts[point]
         top_left_point = center_point - np.array([-20, 80])
-        bottom_right_point = center_point + np.array([250, 100])
+        bottom_right_point = center_point + np.array([300, 100])
 
         print(top_left_point, '\n', bottom_right_point)
 
@@ -84,8 +83,65 @@ for point in range(len(good)):
 
         reader = easyocr.Reader(['en'])
         result = reader.readtext(gray)
-        text = str(result[0][1]).upper()
 
+        text = str(result[0][1]).upper()
+        letters = [letter for letter in text]
+        print(letters)
+
+        print(letters[1:4])
+
+        if letters[-1] in [']', '!', ')', '}']:
+            letters.pop()
+
+
+        if letters[-1] in ['S', 'J']:
+            letters[-1] = '5'
+        if letters[-1] in ['Z']:
+            letters[-1] = '2'
+        if letters[-1] in ['O']:
+            letters[-1] = '0'
+        if letters[-1] == 'I':
+            letters[-1] = '1'
+        if letters[-1] == 'T':
+            letters[-1] = '1'
+
+        if letters[0] in ['1','2','Z','I'] and letters[3] in ['0','1','2','3','4','5','6','7','8','9']:
+            letters.pop(0)
+
+        if len(letters) > 8:
+            letters.pop(-3)
+
+        sub_list_l = letters[3:6]
+        print(sub_list_l)
+        for i in range(len(sub_list_l)):
+            if sub_list_l[i] == '2':
+                sub_list_l[i] = 'Z'
+            if sub_list_l[i] == '4':
+                sub_list_l[i] = 'A'
+            if sub_list_l[i] == '0':
+                sub_list_l[i] = 'O'
+            if sub_list_l[i] == '1':
+                sub_list_l[i] = 'I'
+        letters[3:6] = sub_list_l
+
+
+        sub_list_n = letters[0:3]
+        for i in range(len(sub_list_l)):
+            if sub_list_n[i] == "I":
+                sub_list_n[i] = '1'
+            if sub_list_n[i] == 'Z':
+                sub_list_n = '2'
+            if sub_list_n[i] == '0':
+                sub_list_n = '0'
+
+        if letters[-2] == 'I':
+            print(letters[-2])
+            letters[-2] = '1'
+            print(letters[-2])
+        if letters[-2] == 'D':
+            letters[-2] = '0'
+
+        text = "".join(letters)
         print(text)
         texts.append(text)
 
