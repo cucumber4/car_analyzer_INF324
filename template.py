@@ -28,36 +28,39 @@ def preprocessing(img):
     img = img / 255
     return img
 
-img = cv2.imread("photos_to_detect/subaru_back.jpeg")
+img = cv2.imread("photos_to_detect/lexus.jpeg")
 number = extrac_text(img)
 color = get_dominant_color(img)
 
 color_show = np.zeros((200, 200, 3), dtype=np.uint8)
 color_show[:] = color
+string = " ".join(map(str, color))
+string = "BGR format: \n" + string
+print(string)
+
+toshowlogo = crop_logo(img)
+maplogo = cv2.resize(toshowlogo,(200,200))
 
 cropped = crop_logo(img)
 cropped = preprocessing(cropped)
 cropped = cv2.resize(cropped, (50, 50), interpolation=cv2.INTER_AREA)
 
 logo = get_logo_name(cropped)
+logo = 'Brand name: \n'+logo
 
-number_text = mode(number) if number else "N/A"
+number_text = 'Car plate text:\n' + (str(mode(number))) if number else "N/A"
 logo_text = logo if logo else "N/A"
 
-# Создание окна Tkinter
 root = tk.Tk()
-root.title("Image Analysis")
+root.title("Car Analysis")
 root.geometry("600x600")
 
-# Отображение текста номера
 number_label = tk.Label(root, text=number_text, font=("Arial", 20))
-number_label.place(x=10, y=10)
+number_label.place(x=100, y=100)
 
-# Отображение текста логотипа
 logo_label = tk.Label(root, text=logo_text, font=("Arial", 20))
-logo_label.place(x=10, y=550)
+logo_label.place(x=100, y=450)
 
-# Отображение изображения цветового поля
 color_show = cv2.cvtColor(color_show, cv2.COLOR_BGR2RGB)  # Конвертация для корректного отображения в Tkinter
 color_img = Image.fromarray(color_show)
 color_img = ImageTk.PhotoImage(image=color_img)
@@ -65,17 +68,18 @@ color_img = ImageTk.PhotoImage(image=color_img)
 color_label = tk.Label(root, image=color_img)
 color_label.place(x=400, y=10)
 
-# Отображение текста "color" поверх цветового поля
-color_text_label = tk.Label(root, text="Color", font=("Arial", 20), bg=f'#{color[2]:02x}{color[1]:02x}{color[0]:02x}')
-color_text_label.place(x=400, y=10)
+color_text_label = tk.Label(root, text=string, font=("Arial", 20), bg=f'#{color[2]:02x}{color[1]:02x}{color[0]:02x}')
+color_text_label.place(x=430, y=75)
 
-# Отображение обрезанного изображения
-cropped = cv2.cvtColor((cropped * 255).astype(np.uint8), cv2.COLOR_GRAY2RGB)  # Преобразование для корректного отображения в Tkinter
-cropped_img = Image.fromarray(cropped)
+
+cropped_img = Image.fromarray(maplogo)
 cropped_img = ImageTk.PhotoImage(image=cropped_img)
 
 cropped_label = tk.Label(root, image=cropped_img)
 cropped_label.place(x=400, y=400)
 
-# Запуск цикла обработки событий Tkinter
+initial = cv2.resize(img, (400,400))
+cv2.imshow("Image to analyze", initial)
+
 root.mainloop()
+cv2.waitKey(0)
