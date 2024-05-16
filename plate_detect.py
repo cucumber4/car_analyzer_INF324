@@ -141,13 +141,13 @@ def extrac_text(img2):
 
         except Exception as e:
             print("Error:", e)
-    # plt.imshow(img3, 'gray'), plt.show()
+    plt.imshow(img3, 'gray'), plt.show()
     return texts
 
-img2 = cv.imread('photos_to_detect/huyndai.jpeg', cv.IMREAD_GRAYSCALE)
-
-texts = extrac_text(img2)
-texts_rm = list(set(texts))
+# img2 = cv.imread('photos_to_detect/huyndai.jpeg', cv.IMREAD_GRAYSCALE)
+#
+# texts = extrac_text(img2)
+# texts_rm = list(set(texts))
 # print(texts)
 # print(texts_rm)
 # print(mode(texts))

@@ -44,11 +44,8 @@ def get_dominant_color(image, k=4, image_processing_size=None):
     return list
 
 
-img_path = 'photos_to_detect/corolla.jpeg'
-image = cv2.imread(img_path)
-color = get_dominant_color(image)
-#
-# print(color)
+# img_path = 'photos_to_detect/corolla.jpeg'
+# image = cv2.imread(img_path)
+# color = get_dominant_color(image)
 
-cv2.waitKey(0)
 

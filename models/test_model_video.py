@@ -49,7 +49,6 @@ def get_logo_name(imgOriginal):
         x, y, w, h = cv2.boundingRect(max_contour)
         cv2.rectangle(imgOriginal, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-    cv2.imshow("Processed Image", img)
     img = img.reshape(1, 50, 50, 1)
 
     predictions = model.predict(img)
@@ -64,9 +63,9 @@ def get_logo_name(imgOriginal):
     return str(getClassName(classIndex))
 
 
-threshold = 0.75  # ПОРОГ ВЕРОЯТНОСТИ
+threshold = 0.75
 
-pickle_in = open("models/model_trained.p", "rb")  ## rb = ЧТЕНИЕ БАЙТОВ
+pickle_in = open("models/model_trained.p", "rb")
 model = pickle.load(pickle_in)
 
 bg_subtractor = cv2.createBackgroundSubtractorMOG2()
